@@ -92,3 +92,14 @@ func handle_panning(delta: float) -> void:
 		
 		global_translate(Vector3(-displacement.x, 0, -displacement.y) * 0.1)
 	
+func _process(delta: float) -> void:
+	if not is_panning:
+		handle_edge_movement(delta)
+		handle_keyboard_movement(delta)
+		if allow_rotation:
+			handle_rotation(delta)
+		if allow_zoom:
+			handle_zoom(delta)
+	else:
+		if allow_pan:
+			handle_panning(delta)
