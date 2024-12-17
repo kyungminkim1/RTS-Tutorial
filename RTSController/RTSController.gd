@@ -22,3 +22,42 @@ var is_rotating: bool = false
 var is_panning: bool = false
 var last_mouse_position: Vector2
 var zoom_level: float = 64
+
+# Movement
+func handle_keyboard_movement(delta: float) -> void:
+	var direction = Vector3.ZERO
+	if Input.is_action_pressed("ui_up"):
+		direction.z -= 1
+	if Input.is_action_pressed("ui_down"):
+		direction.z += 1
+	if Input.is_action_pressed("ui_left"):
+		direction.x -= 1
+	if Input.is_action_pressed("ui_right"):
+		direction.x += 1
+		
+	if direction != Vector3.ZERO:
+		direction = direction.normalized()
+		global_translate(direction * movement_speed * delta)
+
+func handle_edge_movement(delta: float) -> void:
+	var viewport = get_viewport()
+	var mouse_pos = viewport.get_mouse_position()
+	var screen_rect = viewport.get_visible_rect()
+	var direction = Vector3.ZERO
+	
+	if mouse_pos.x < edge_margin:
+		direction.x -= 1
+	elif mouse_pos.x > screen_rect.size.x - edge_margin:
+		direction.x += 1
+	
+	if mouse_pos.y < edge_margin:
+		direction.z -= 1
+	elif mouse_pos.y > screen_rect.size.y - edge_margin:
+		direction.z += 1
+	
+	if direction != Vector3.ZERO:
+		direction = direction.normalized()
+		global_translate(direction * movement_speed * delta)
+	
+# Rotation
+
