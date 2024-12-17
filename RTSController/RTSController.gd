@@ -23,6 +23,42 @@ var is_panning: bool = false
 var last_mouse_position: Vector2
 var zoom_level: float = 64
 
+func _ready() -> void:
+	# Initialise zoom level
+	zoom_level = camera.position.y
+
+func _process(delta: float) -> void:
+	if not is_panning:
+		handle_edge_movement(delta)
+		handle_keyboard_movement(delta)
+		if allow_rotation:
+			handle_rotation(delta)
+		if allow_zoom:
+			handle_zoom(delta)
+	else:
+		if allow_pan:
+			handle_panning(delta)
+			
+# Handling inputs
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("camera_rotate"):
+		is_rotating = true
+		last_mouse_position = get_viewport().get_mouse_position()
+	elif event.is_action_released("camera_rotate"):
+		is_rotating = false
+	
+	if event.is_action_pressed("camera_pan"):
+		is_panning = true
+		last_mouse_position = get_viewport().get_mouse_position()
+	elif event.is_action_released("camera_pan"):
+		is_panning = false
+	
+	if event.is_action_pressed("zoom_in"):
+		zoom_level -= zoom_speed
+	elif event.is_action_pressed("zoom_out"):
+		zoom_level += zoom_speed
+
+
 # Movement
 func handle_keyboard_movement(delta: float) -> void:
 	var direction = Vector3.ZERO
@@ -92,33 +128,3 @@ func handle_panning(delta: float) -> void:
 		
 		global_translate(Vector3(-displacement.x, 0, -displacement.y) * 0.1)
 	
-func _process(delta: float) -> void:
-	if not is_panning:
-		handle_edge_movement(delta)
-		handle_keyboard_movement(delta)
-		if allow_rotation:
-			handle_rotation(delta)
-		if allow_zoom:
-			handle_zoom(delta)
-	else:
-		if allow_pan:
-			handle_panning(delta)
-			
-# Handling inputs
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("camera_rotate"):
-		is_rotating = true
-		last_mouse_position = get_viewport().get_mouse_position()
-	elif event.is_action_released("camera_rotate"):
-		is_rotating = false
-	
-	if event.is_action_pressed("camera_pan"):
-		is_panning = true
-		last_mouse_position = get_viewport().get_mouse_position()
-	elif event.is_action_released("camera_pan"):
-		is_panning = false
-	
-	if event.is_action_pressed("zoom_in"):
-		zoom_level -= zoom_speed
-	elif event.is_action_pressed("zoom_out"):
-		zoom_level += zoom_speed
