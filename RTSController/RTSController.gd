@@ -60,4 +60,20 @@ func handle_edge_movement(delta: float) -> void:
 		global_translate(direction * movement_speed * delta)
 	
 # Rotation
+func handle_rotation(delta: float) -> void:
+	if is_rotating:
+		var mouse_displacement = get_viewport().get_mouse_position()
+		- last_mouse_position
+		last_mouse_position = get_viewport().get_mouse_position()
 
+		# Horizontal rotation
+		rotation.y -= deg_to_rad(mouse_displacement.x * rotation_speed * delta)
+		
+		# Elevation
+		var elevation_angle = rad_to_deg(elevation_node.rotation.x)
+		elevation_angle = clamp(
+			elevation_angle - mouse_displacement.y * rotation_speed * delta,
+			-max_elevation_angle,
+			-min_elevation_angle
+		)
+		elevation_node.rotation.x = deg_to_rad(elevation_angle)
