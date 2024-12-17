@@ -103,3 +103,22 @@ func _process(delta: float) -> void:
 	else:
 		if allow_pan:
 			handle_panning(delta)
+			
+# Handling inputs
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("camera_rotate"):
+		is_rotating = true
+		last_mouse_position = get_viewport().get_mouse_position()
+	elif event.is_action_released("camera_rotate"):
+		is_rotating = false
+	
+	if event.is_action_pressed("camera_pan"):
+		is_panning = true
+		last_mouse_position = get_viewport().get_mouse_position()
+	elif event.is_action_released("camera_pan"):
+		is_panning = false
+	
+	if event.is_action_pressed("zoom_in"):
+		zoom_level -= zoom_speed
+	elif event.is_action_pressed("zoom_out"):
+		zoom_level += zoom_speed
