@@ -77,3 +77,18 @@ func handle_rotation(delta: float) -> void:
 			-min_elevation_angle
 		)
 		elevation_node.rotation.x = deg_to_rad(elevation_angle)
+
+# Zoom
+func handle_zoom(delta: float) -> void:
+	zoom_level = clamp(zoom_level, min_zoom, max_zoom)
+	camera.position.y = lerp(camera.position.y, zoom_level, 0.1)
+	
+# Panning	
+func handle_panning(delta: float) -> void:
+	if is_panning:
+		var current_mouse_pos = get_viewport().get_mouse_position()
+		var displacement = current_mouse_pos - last_mouse_position
+		last_mouse_position = current_mouse_pos
+		
+		global_translate(Vector3(-displacement.x, 0, -displacement.y) * 0.1)
+	
